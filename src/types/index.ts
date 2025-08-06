@@ -12,3 +12,9 @@ export interface Advocate {
 export interface AdvocatesResponse {
     data: Advocate[];
 }
+
+export interface AdvocateTableProps {
+    advocates: Advocate[];
+    loading?: boolean;
+    pageSize?: number;
+}

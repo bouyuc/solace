@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SearchBar } from "../components";
-import { Table, Typography, Tag, Space } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { SearchBar, AdvocateTable } from "../components";
+import { Typography } from "antd";
 import { Advocate } from "../types";
 
 const { Title } = Typography;
@@ -55,53 +54,6 @@ export default function Home() {
     setFilteredAdvocates(advocates);
   };
 
-  const columns: ColumnsType<Advocate> = [
-    {
-      title: "First Name",
-      dataIndex: "firstName",
-      key: "firstName",
-    },
-    {
-      title: "Last Name",
-      dataIndex: "lastName",
-      key: "lastName",
-    },
-    {
-      title: "City",
-      dataIndex: "city",
-      key: "city",
-    },
-    {
-      title: "Degree",
-      dataIndex: "degree",
-      key: "degree",
-    },
-    {
-      title: "Specialties",
-      dataIndex: "specialties",
-      key: "specialties",
-      render: (specialties: string[]) => (
-        <Space direction="vertical" size={2}>
-          {specialties.map((specialty: string, idx: number) => (
-            <Tag key={idx} color="blue">
-              {specialty}
-            </Tag>
-          ))}
-        </Space>
-      ),
-    },
-    {
-      title: "Years of Experience",
-      dataIndex: "yearsOfExperience",
-      key: "yearsOfExperience",
-    },
-    {
-      title: "Phone Number",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
-    },
-  ];
-
   return (
     <div style={{ padding: "24px" }}>
       <Title level={1}>Solace Advocates</Title>
@@ -112,20 +64,10 @@ export default function Home() {
         onReset={onClick}
       />
 
-      <Table<Advocate>
-        columns={columns}
-        dataSource={filteredAdvocates}
+      <AdvocateTable
+        advocates={filteredAdvocates}
         loading={loading}
-        rowKey={(record: Advocate, index?: number) =>
-          record.id?.toString() || index?.toString() || "0"
-        }
-        pagination={{
-          pageSize: 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total: number) => `Total ${total} advocates`,
-        }}
-        style={{ marginTop: 16 }}
+        pageSize={10}
       />
     </div>
   );
