@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Table, Tag, Space } from "antd";
+import { Table, Tag, Space, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Advocate, AdvocateTableProps } from "../types";
 
@@ -10,6 +10,15 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   loading = false,
   pageSize = 10,
 }) => {
+  const { Text } = Typography;
+  const formattedPhoneNumber = (phoneNumber: string) => {
+    try {
+      return String(phoneNumber).replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+    } catch (error) {
+      console.error("Error formatting phone number:", error);
+      return phoneNumber;
+    }
+  };
   const columns: ColumnsType<Advocate> = [
     {
       title: "First Name",
@@ -32,6 +41,19 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       key: "degree",
     },
     {
+      title: "Years of Experience",
+      dataIndex: "yearsOfExperience",
+      key: "yearsOfExperience",
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+      render: (phoneNumber: string) => (
+        <Text>{formattedPhoneNumber(phoneNumber)}</Text>
+      ),
+    },
+    {
       title: "Specialties",
       dataIndex: "specialties",
       key: "specialties",
@@ -44,16 +66,6 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
           ))}
         </Space>
       ),
-    },
-    {
-      title: "Years of Experience",
-      dataIndex: "yearsOfExperience",
-      key: "yearsOfExperience",
-    },
-    {
-      title: "Phone Number",
-      dataIndex: "phoneNumber",
-      key: "phoneNumber",
     },
   ];
 
