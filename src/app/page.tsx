@@ -3,14 +3,16 @@
 import { useEffect, useState } from "react";
 import { SearchBar } from "../components";
 import { Table, Typography, Tag, Space } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import { Advocate } from "../types";
 
 const { Title } = Typography;
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState<any[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [advocates, setAdvocates] = useState<Advocate[]>([]);
+  const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -24,19 +26,23 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e: any) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
     setSearchTerm(searchTerm);
 
     console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
+    const filteredAdvocates = advocates.filter((advocate: Advocate) => {
+      const searchLower = searchTerm.toLowerCase();
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.firstName.toLowerCase().includes(searchLower) ||
+        advocate.lastName.toLowerCase().includes(searchLower) ||
+        advocate.city.toLowerCase().includes(searchLower) ||
+        advocate.degree.toLowerCase().includes(searchLower) ||
+        advocate.specialties.some((specialty) =>
+          specialty.toLowerCase().includes(searchLower)
+        ) ||
+        advocate.yearsOfExperience.toString().includes(searchTerm) ||
+        advocate.phoneNumber.toString().includes(searchTerm)
       );
     });
 
@@ -49,7 +55,7 @@ export default function Home() {
     setFilteredAdvocates(advocates);
   };
 
-  const columns = [
+  const columns: ColumnsType<Advocate> = [
     {
       title: "First Name",
       dataIndex: "firstName",
@@ -76,7 +82,7 @@ export default function Home() {
       key: "specialties",
       render: (specialties: string[]) => (
         <Space direction="vertical" size={2}>
-          {specialties.map((specialty, idx) => (
+          {specialties.map((specialty: string, idx: number) => (
             <Tag key={idx} color="blue">
               {specialty}
             </Tag>
@@ -106,16 +112,18 @@ export default function Home() {
         onReset={onClick}
       />
 
-      <Table
+      <Table<Advocate>
         columns={columns}
         dataSource={filteredAdvocates}
         loading={loading}
-        rowKey={(record: any, index: any) => index || 0}
+        rowKey={(record: Advocate, index?: number) =>
+          record.id?.toString() || index?.toString() || "0"
+        }
         pagination={{
           pageSize: 10,
           showSizeChanger: true,
           showQuickJumper: true,
-          showTotal: (total: any) => `Total ${total} advocates`,
+          showTotal: (total: number) => `Total ${total} advocates`,
         }}
         style={{ marginTop: 16 }}
       />
