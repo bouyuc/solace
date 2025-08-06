@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Advocate } from "../types";
+import { Advocate } from "..";
 
 interface UseAdvocatesReturn {
     advocates: Advocate[];

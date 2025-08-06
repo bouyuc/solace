@@ -1,8 +1,8 @@
 "use client";
 
-import { SearchBar, AdvocateTable } from "../components";
+import { SearchBar } from "../components";
+import { AdvocateTable, useAdvocates } from "../features/advocates";
 import { Typography, Alert } from "antd";
-import { useAdvocates } from "../hooks";
 
 const { Title } = Typography;
 
