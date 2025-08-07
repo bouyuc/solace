@@ -11,7 +11,7 @@ interface AdvocatesApiResponse {
 
 interface UseAdvocatesReturn {
     advocates: Advocate[];
-    loading: boolean;
+    isFetching: boolean;
     error: string | null;
     searchTerm: string;
     setSearchTerm: (term: string) => void;
@@ -31,7 +31,7 @@ export const useAdvocates = (): UseAdvocatesReturn => {
 
     const {
         data,
-        isLoading: loading,
+        isFetching,
         error,
     } = useQuery<AdvocatesApiResponse>({
         queryKey: ["advocates", page, pageSize, searchTerm],
@@ -60,7 +60,7 @@ export const useAdvocates = (): UseAdvocatesReturn => {
 
     return {
         advocates,
-        loading,
+        isFetching,
         error: error ? (error as Error).message : null,
         searchTerm,
         setSearchTerm,

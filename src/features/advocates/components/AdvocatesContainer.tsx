@@ -9,7 +9,7 @@ import { useAdvocates } from "../hooks/useAdvocates";
 export const AdvocatesContainer: React.FC = () => {
   const {
     advocates,
-    loading,
+    isFetching,
     error,
     searchTerm,
     setSearchTerm,
@@ -40,7 +40,7 @@ export const AdvocatesContainer: React.FC = () => {
 
       <AdvocateTable
         advocates={advocates}
-        loading={loading}
+        loading={isFetching}
         pageSize={pageSize}
         page={page}
         total={total}
