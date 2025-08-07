@@ -9,8 +9,11 @@ export interface Advocate {
     phoneNumber: string;
 }
 
-export interface AdvocatesResponse {
+export interface AdvocatesApiResponse {
     data: Advocate[];
+    page: number;
+    limit: number;
+    total: number;
 }
 
 export interface AdvocateTableProps {

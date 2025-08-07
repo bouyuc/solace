@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { Advocate } from "..";
-
-interface AdvocatesApiResponse {
-    data: Advocate[];
-    page: number;
-    limit: number;
-    total: number;
-}
+import { Advocate, advocatesService } from "..";
+import { AdvocatesApiResponse } from "../types";
 
 interface UseAdvocatesReturn {
     advocates: Advocate[];
@@ -23,7 +17,6 @@ interface UseAdvocatesReturn {
     total: number;
 }
 
-
 export const useAdvocates = (): UseAdvocatesReturn => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [page, setPage] = useState<number>(1);
@@ -35,18 +28,7 @@ export const useAdvocates = (): UseAdvocatesReturn => {
         error,
     } = useQuery<AdvocatesApiResponse>({
         queryKey: ["advocates", page, pageSize, searchTerm],
-        queryFn: async () => {
-            const params = new URLSearchParams({
-                page: page.toString(),
-                limit: pageSize.toString(),
-                ...(searchTerm && { search: searchTerm })
-            });
-            const response = await fetch(`/api/advocates?${params}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        },
+        queryFn: () => advocatesService.getAdvocates(page, pageSize, searchTerm),
         placeholderData: keepPreviousData
     });
 
@@ -55,7 +37,7 @@ export const useAdvocates = (): UseAdvocatesReturn => {
 
     const resetSearch = () => {
         setSearchTerm("");
-        setPage(1); // Reset to first page when clearing search
+        setPage(1);
     };
 
     return {
