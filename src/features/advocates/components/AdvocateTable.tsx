@@ -5,20 +5,27 @@ import { Table, Tag, Space, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Advocate, AdvocateTableProps } from "../types";
 
+const formattedPhoneNumber = (phoneNumber: string) => {
+  try {
+    return String(phoneNumber).replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+  } catch (error) {
+    console.error("Error formatting phone number:", error);
+    return phoneNumber;
+  }
+};
+
 export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   advocates,
   loading = false,
   pageSize = 10,
+  page = 1,
+  total = 0,
+  onChangePage,
+  onChangePageSize,
 }) => {
+  console.log("Advocate table loading:", loading);
   const { Text } = Typography;
-  const formattedPhoneNumber = (phoneNumber: string) => {
-    try {
-      return String(phoneNumber).replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-    } catch (error) {
-      console.error("Error formatting phone number:", error);
-      return phoneNumber;
-    }
-  };
+
   const columns: ColumnsType<Advocate> = [
     {
       title: "First Name",
@@ -78,7 +85,11 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
         record.id?.toString() || index?.toString() || "0"
       }
       pagination={{
+        current: page,
         pageSize,
+        total,
+        onChange: onChangePage,
+        onShowSizeChange: (_: number, size: number) => onChangePageSize?.(size),
         showSizeChanger: true,
         showQuickJumper: true,
         showTotal: (total: number) => `Total ${total} advocates`,

@@ -17,4 +17,8 @@ export interface AdvocateTableProps {
     advocates: Advocate[];
     loading?: boolean;
     pageSize?: number;
+    page?: number;
+    total?: number;
+    onChangePage?: (page: number) => void;
+    onChangePageSize?: (size: number) => void;
 }

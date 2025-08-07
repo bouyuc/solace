@@ -1,81 +1,74 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState } from "react";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { Advocate } from "..";
+
+interface AdvocatesApiResponse {
+    data: Advocate[];
+    page: number;
+    limit: number;
+    total: number;
+}
 
 interface UseAdvocatesReturn {
     advocates: Advocate[];
-    filteredAdvocates: Advocate[];
     loading: boolean;
     error: string | null;
     searchTerm: string;
     setSearchTerm: (term: string) => void;
     resetSearch: () => void;
+    page: number;
+    setPage: (page: number) => void;
+    pageSize: number;
+    setPageSize: (size: number) => void;
+    total: number;
 }
 
+
 export const useAdvocates = (): UseAdvocatesReturn => {
-    const [advocates, setAdvocates] = useState<Advocate[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    const [page, setPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(10);
 
-    // Fetch advocates data
-    useEffect(() => {
-        const fetchAdvocates = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                console.log("fetching advocates...");
-
-                const response = await fetch("/api/advocates");
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const jsonResponse = await response.json();
-                setAdvocates(jsonResponse.data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : "Failed to fetch advocates");
-                console.error("Error fetching advocates:", err);
-            } finally {
-                setLoading(false);
+    const {
+        data,
+        isLoading: loading,
+        error,
+    } = useQuery<AdvocatesApiResponse>({
+        queryKey: ["advocates", page, pageSize, searchTerm],
+        queryFn: async () => {
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: pageSize.toString(),
+                ...(searchTerm && { search: searchTerm })
+            });
+            const response = await fetch(`/api/advocates?${params}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        };
+            return response.json();
+        },
+        placeholderData: keepPreviousData
+    });
 
-        fetchAdvocates();
-    }, []);
-
-    // Filter advocates based on search term
-    const filteredAdvocates = useMemo(() => {
-        if (!searchTerm) return advocates;
-
-        console.log("filtering advocates...");
-        return advocates.filter((advocate: Advocate) => {
-            const searchLower = searchTerm.toLowerCase();
-            return (
-                advocate.firstName.toLowerCase().includes(searchLower) ||
-                advocate.lastName.toLowerCase().includes(searchLower) ||
-                advocate.city.toLowerCase().includes(searchLower) ||
-                advocate.degree.toLowerCase().includes(searchLower) ||
-                advocate.specialties.some((specialty) =>
-                    specialty.toLowerCase().includes(searchLower)
-                ) ||
-                advocate.yearsOfExperience.toString().includes(searchTerm) ||
-                advocate.phoneNumber.toString().includes(searchTerm)
-            );
-        });
-    }, [advocates, searchTerm]);
+    const advocates: Advocate[] = data?.data || [];
+    const total: number = data?.total || 0;
 
     const resetSearch = () => {
-        console.log("resetting search...");
         setSearchTerm("");
+        setPage(1); // Reset to first page when clearing search
     };
 
     return {
         advocates,
-        filteredAdvocates,
         loading,
-        error,
+        error: error ? (error as Error).message : null,
         searchTerm,
         setSearchTerm,
         resetSearch,
+        page,
+        setPage,
+        pageSize,
+        setPageSize,
+        total,
     };
 };
