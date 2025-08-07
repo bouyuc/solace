@@ -4,15 +4,7 @@ import React from "react";
 import { Table, Tag, Space, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Advocate, AdvocateTableProps } from "../types";
-
-const formattedPhoneNumber = (phoneNumber: string) => {
-  try {
-    return String(phoneNumber).replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-  } catch (error) {
-    console.error("Error formatting phone number:", error);
-    return phoneNumber;
-  }
-};
+import { formattedPhoneNumber } from "@/utils/formatter";
 
 export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   advocates,
