@@ -6,6 +6,7 @@ import {
   serial,
   timestamp,
   bigint,
+  index,
 } from "drizzle-orm/pg-core";
 
 const advocates = pgTable("advocates", {
@@ -31,6 +32,11 @@ const advocateSpecialties = pgTable("advocate_specialties", {
   specialtyId: integer("specialty_id")
     .notNull()
     .references(() => specialties.id),
-});
+},
+  (table) => ({
+    advocateIdIdx: index("advocate_specialties_advocate_id_idx").on(table.advocateId),
+    specialtyIdIdx: index("advocate_specialties_specialty_id_idx").on(table.specialtyId),
+  })
+);
 
 export { advocates, specialties, advocateSpecialties };
