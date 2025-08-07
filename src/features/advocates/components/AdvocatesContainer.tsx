@@ -21,8 +21,8 @@ export const AdvocatesContainer: React.FC = () => {
     total,
   } = useAdvocates();
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
   };
 
   if (error) {
@@ -33,8 +33,9 @@ export const AdvocatesContainer: React.FC = () => {
     <>
       <SearchBar
         searchTerm={searchTerm}
-        onChange={handleSearchChange}
+        onSearchChange={handleSearchChange}
         onReset={resetSearch}
+        debounceMs={300}
       />
 
       <AdvocateTable

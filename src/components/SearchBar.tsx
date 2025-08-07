@@ -1,22 +1,50 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Input, Button, Space, Typography } from "antd";
 import { SearchOutlined, ReloadOutlined } from "@ant-design/icons";
+import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
 
 const { Text } = Typography;
 
 interface SearchBarProps {
   searchTerm: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchChange: (value: string) => void;
   onReset: () => void;
+  debounceMs?: number;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   searchTerm,
-  onChange,
+  onSearchChange,
   onReset,
+  debounceMs = 300,
 }) => {
+  const [localValue, setLocalValue] = useState(searchTerm);
+  const [debouncedSearch, cancelSearch] = useDebouncedCallback(
+    onSearchChange,
+    debounceMs
+  );
+
+  // Sync external searchTerm changes (like reset)
+  useEffect(() => {
+    setLocalValue(searchTerm);
+  }, [searchTerm]);
+
+  // Trigger debounced search when local value changes
+  useEffect(() => {
+    debouncedSearch(localValue);
+  }, [localValue, debouncedSearch]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalValue(e.target.value);
+  };
+
+  const handleClear = () => {
+    setLocalValue("");
+    cancelSearch(); // Cancel any pending debounced call
+    onSearchChange(""); // Immediate clear for better UX
+  };
   return (
     <div style={{ marginBottom: 16 }}>
       <Text strong>Search</Text>
@@ -29,9 +57,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         <Input
           placeholder="Search advocates..."
           prefix={<SearchOutlined />}
-          value={searchTerm}
-          onChange={onChange}
+          value={localValue}
+          onChange={handleInputChange}
           allowClear
+          onClear={handleClear}
         />
         <Button type="default" icon={<ReloadOutlined />} onClick={onReset}>
           Reset
