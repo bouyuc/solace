@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { Advocate, advocatesService } from "..";
-import { AdvocatesApiResponse } from "../types";
+import { advocatesService } from "..";
+import { Advocate, AdvocatesApiResponse } from "../types";
 
 interface UseAdvocatesReturn {
     advocates: Advocate[];
