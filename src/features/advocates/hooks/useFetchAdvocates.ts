@@ -17,7 +17,7 @@ interface UseAdvocatesReturn {
     total: number;
 }
 
-export const useAdvocates = (): UseAdvocatesReturn => {
+export const useFetchAdvocates = (): UseAdvocatesReturn => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);

@@ -1,9 +1,8 @@
 // Components
 export { AdvocateTable } from './components/AdvocateTable';
-export { AdvocatesContainer } from './components/AdvocatesContainer';
 
 // Hooks
-export { useAdvocates } from './hooks/useAdvocates';
+export { useFetchAdvocates } from './hooks/useFetchAdvocates';
 
 // Services
 export { advocatesService } from './services/advocatesService';
