@@ -17,7 +17,6 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   error = null,
   refetch = () => {},
 }) => {
-  console.log("Advocate table loading:", loading);
   const { Text } = Typography;
 
   const columns: ColumnsType<Advocate> = [
