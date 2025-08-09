@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Table, Tag, Space, Typography } from "antd";
+import { Table, Tag, Space, Typography, Result, Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Advocate, AdvocateTableProps } from "../types";
 import { formattedPhoneNumber } from "@/utils/formatter";
@@ -14,6 +14,8 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
   total = 0,
   onChangePage,
   onChangePageSize,
+  error = null,
+  refetch = () => {},
 }) => {
   console.log("Advocate table loading:", loading);
   const { Text } = Typography;
@@ -73,9 +75,7 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
       columns={columns}
       dataSource={advocates}
       loading={loading}
-      rowKey={(record: Advocate, index?: number) =>
-        record.id?.toString() || index?.toString() || "0"
-      }
+      rowKey={(record: Advocate) => record.id.toString()}
       pagination={{
         current: page,
         pageSize,
@@ -86,7 +86,22 @@ export const AdvocateTable: React.FC<AdvocateTableProps> = ({
         showQuickJumper: true,
         showTotal: (total: number) => `Total ${total} advocates`,
       }}
-      style={{ marginTop: 16 }}
+      locale={{
+        emptyText: error ? (
+          <Result
+            status="error"
+            title="Failed to Load Data"
+            subTitle={`Something went wrong. Please try again later.`}
+            extra={
+              <Button type="primary" onClick={refetch}>
+                Retry
+              </Button>
+            }
+          />
+        ) : (
+          "No data"
+        ),
+      }}
     />
   );
 };

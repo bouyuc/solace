@@ -12,6 +12,7 @@ interface SearchBarProps {
   onSearchChange: (value: string) => void;
   onReset: () => void;
   debounceMs?: number;
+  className?: string;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
@@ -19,6 +20,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onSearchChange,
   onReset,
   debounceMs = 300,
+  className = "",
 }) => {
   const [localValue, setLocalValue] = useState(searchTerm);
   const [debouncedSearch, cancelSearch] = useDebouncedCallback(
@@ -46,7 +48,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     onSearchChange(""); // Immediate clear for better UX
   };
   return (
-    <div style={{ marginBottom: 16 }}>
+    <div className={className}>
       <Text strong>Search</Text>
       <div style={{ marginTop: 8, marginBottom: 8 }}>
         <Text>

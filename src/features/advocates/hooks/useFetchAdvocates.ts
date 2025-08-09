@@ -15,6 +15,7 @@ interface UseAdvocatesReturn {
     pageSize: number;
     setPageSize: (size: number) => void;
     total: number;
+    refetch: () => void;
 }
 
 export const useFetchAdvocates = (): UseAdvocatesReturn => {
@@ -26,6 +27,7 @@ export const useFetchAdvocates = (): UseAdvocatesReturn => {
         data,
         isFetching,
         error,
+        refetch,
     } = useQuery<AdvocatesApiResponse>({
         queryKey: ["advocates", page, pageSize, searchTerm],
         queryFn: () => advocatesService.getAdvocates(page, pageSize, searchTerm),
@@ -52,5 +54,6 @@ export const useFetchAdvocates = (): UseAdvocatesReturn => {
         pageSize,
         setPageSize,
         total,
+        refetch
     };
 };

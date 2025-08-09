@@ -1,5 +1,5 @@
 export interface Advocate {
-    id?: number;
+    id: number;
     firstName: string;
     lastName: string;
     city: string;
@@ -18,10 +18,12 @@ export interface AdvocatesApiResponse {
 
 export interface AdvocateTableProps {
     advocates: Advocate[];
-    loading?: boolean;
-    pageSize?: number;
-    page?: number;
-    total?: number;
-    onChangePage?: (page: number) => void;
-    onChangePageSize?: (size: number) => void;
+    loading: boolean;
+    pageSize: number;
+    page: number;
+    total: number;
+    onChangePage: (page: number) => void;
+    onChangePageSize: (size: number) => void;
+    error?: string | null;
+    refetch?: () => void;
 }

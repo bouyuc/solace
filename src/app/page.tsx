@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Alert, Typography } from "antd";
+import { Typography } from "antd";
 import { useFetchAdvocates } from "../features/advocates";
 import { AdvocateTable } from "../features/advocates/components/AdvocateTable";
 import { SearchBar } from "../components";
@@ -21,26 +21,19 @@ export default function Home() {
     pageSize,
     setPageSize,
     total,
+    refetch,
   } = useFetchAdvocates();
 
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
   };
 
-  if (error) {
-    return (
-      <div style={{ padding: "24px" }}>
-        <Title level={1}>Solace Advocates</Title>
-        <Alert message="Error" description={error} type="error" showIcon />
-      </div>
-    );
-  }
-
   return (
-    <div style={{ padding: "24px" }}>
+    <div className="p-6">
       <Title level={1}>Solace Advocates</Title>
 
       <SearchBar
+        className="mb-4"
         searchTerm={searchTerm}
         onSearchChange={handleSearchChange}
         onReset={resetSearch}
@@ -55,6 +48,8 @@ export default function Home() {
         total={total}
         onChangePage={setPage}
         onChangePageSize={setPageSize}
+        error={error}
+        refetch={refetch}
       />
     </div>
   );
